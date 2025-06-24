@@ -1,7 +1,7 @@
 import pandas as pd
 import asyncio
 from functools import reduce
-import logging
+from loguru import logger
 from typing import Any, Dict, List, Optional
 
 from src.common.const import (
@@ -35,7 +35,7 @@ class ExcelService:
             )
             return data
         except Exception as e:
-            logging.error(f"Ошибка при получении данных посещений: {e}")
+            logger.error(f"Ошибка при получении данных посещений: {e}")
             return None
 
     async def get_data_of_visits_static(self, exists_zones: dict) -> dict:
@@ -49,7 +49,7 @@ class ExcelService:
 
         for _, title, _, statistic in response_data.get("data"):
             if not statistic or not isinstance(statistic, list):
-                logging.warning(f"Пустая или некорректная статистика для {title}")
+                logger.warning(f"Пустая или некорректная статистика для {title}")
                 continue
             df = pd.DataFrame(
                 data=statistic, columns=["Время", f"Вход_{title}", f"Выход_{title}"]
@@ -63,13 +63,13 @@ class ExcelService:
             return linked_df
 
         except Exception as e:
-            logging.error(f"Ошибка при объединении DataFrame: {e}")
+            logger.error(f"Ошибка при объединении DataFrame: {e}")
             return None
 
     def save_df_to_excel(self, df: pd.DataFrame, path: str = DEFAULT_RESULT_PATH):
         try:
             df.to_excel(path, index=False)
-            logging.info(f"Файл успешно сохранён: {path}")
+            logger.info(f"Файл успешно сохранён: {path}")
 
         except Exception as e:
-            logging.error(f"Ошибка при сохранении Excel-файла: {e}")
+            logger.error(f"Ошибка при сохранении Excel-файла: {e}")

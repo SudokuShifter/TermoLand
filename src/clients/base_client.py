@@ -3,7 +3,7 @@ from typing import Any, Optional, Dict, Tuple, Union
 
 from aiohttp import ClientSession
 from urllib.parse import urlencode
-import logging
+from loguru import logger
 
 
 class BaseHTTPClient(ABC):
@@ -44,10 +44,10 @@ class BaseHTTPClient(ABC):
                 try:
                     response_data = await response.json()
                 except Exception as e:
-                    logging.warning(f"Ответ не JSON: {e}, пытаюсь получить как текст.")
+                    logger.warning(f"Ответ не JSON: {e}, пытаюсь получить как текст.")
                     response_data = await response.text()
 
                 return response_data
         except Exception as e:
-            logging.error(f"Ошибка при выполнении HTTP-запроса: {e}")
+            logger.error(f"Ошибка при выполнении HTTP-запроса: {e}")
             return None
