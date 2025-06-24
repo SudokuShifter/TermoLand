@@ -3,6 +3,9 @@ import os
 DEFAULT_FILE_PATH = os.path.join(os.getcwd(), "src", "common", "Справочник.xlsx")
 DEFAULT_URL = "http://185.76.109.236:9006"
 DEFAULT_PATH = "borders/chart-data"
+DEFAULT_RESULT_PATH = "result.xlsx"
+DEFAULT_DATE = "3.06.2020"
+DEFAULT_MODE = "halfhour"
 EXISTING_ZONE = {}
 STATIC_API_RESPONSE = {
     "picker_date": "3.06.2020",

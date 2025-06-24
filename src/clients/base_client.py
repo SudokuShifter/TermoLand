@@ -1,19 +1,24 @@
 from abc import ABC
-from typing import Any, Optional
+from typing import Any, Optional, Dict, Tuple, Union
 
 from aiohttp import ClientSession
 from urllib.parse import urlencode
+import logging
 
 
 class BaseHTTPClient(ABC):
     @staticmethod
     async def execute_request(
         url: str,
-        body: Optional[dict[str, Any]] = None,
-        url_params: Optional[dict[str, Any]] = None,
-        headers: Optional[dict[str, Any]] = None,
+        body: Optional[Dict[str, Any]] = None,
+        url_params: Optional[Dict[str, Any]] = None,
+        headers: Optional[Dict[str, Any]] = None,
         method: str = "GET",
-    ) -> tuple[Any, int]:
+    ) -> Union[Dict[str, Any], str, None]:
+        """
+        Выполняет HTTP-запрос к внешнему API.
+        Возвращает данные ответа (dict или str) либо None в случае ошибки.
+        """
         if headers is None:
             headers = {"Content-Type": "application/json", "accept": "application/json"}
 
@@ -23,21 +28,26 @@ class BaseHTTPClient(ABC):
         if url_params:
             url = f"{url}?{urlencode(url_params)}"
 
-        async with ClientSession() as session:
-            if method.upper() == "GET":
-                response = await session.get(url, headers=headers)
-            elif method.upper() == "POST":
-                response = await session.post(url, json=body, headers=headers)
-            elif method.upper() == "PUT":
-                response = await session.put(url, json=body, headers=headers)
-            elif method.upper() == "DELETE":
-                response = await session.delete(url, headers=headers)
-            else:
-                raise ValueError(f"Неподдерживаемый метод: {method}")
+        try:
+            async with ClientSession() as session:
+                if method.upper() == "GET":
+                    response = await session.get(url, headers=headers)
+                elif method.upper() == "POST":
+                    response = await session.post(url, json=body, headers=headers)
+                elif method.upper() == "PUT":
+                    response = await session.put(url, json=body, headers=headers)
+                elif method.upper() == "DELETE":
+                    response = await session.delete(url, headers=headers)
+                else:
+                    raise ValueError(f"Неподдерживаемый метод: {method}")
 
-            try:
-                response_data = await response.json()
-            except:
-                response_data = await response.text()
+                try:
+                    response_data = await response.json()
+                except Exception as e:
+                    logging.warning(f"Ответ не JSON: {e}, пытаюсь получить как текст.")
+                    response_data = await response.text()
 
-            return response_data
+                return response_data
+        except Exception as e:
+            logging.error(f"Ошибка при выполнении HTTP-запроса: {e}")
+            return None
