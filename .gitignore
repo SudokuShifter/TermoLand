@@ -43,3 +43,5 @@ dmypy.json
 
 # Postgres data
 pgdata
+
+results.xlsx
