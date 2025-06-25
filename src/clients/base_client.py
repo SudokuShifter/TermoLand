@@ -42,7 +42,7 @@ class BaseHTTPClient(ABC):
                     raise ValueError(f"Неподдерживаемый метод: {method}")
 
                 try:
-                    response_data = await response.json()
+                    response_data = await response.json(content_type=None)
                 except Exception as e:
                     logger.warning(f"Ответ не JSON: {e}, пытаюсь получить как текст.")
                     response_data = await response.text()
