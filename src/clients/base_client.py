@@ -27,7 +27,7 @@ class BaseHTTPClient(ABC):
 
         if url_params:
             url = f"{url}?{BaseHTTPClient.custom_urlencode(url_params)}"
-
+        logger.info(f'Запрос отправляется на URL - {url}')
         try:
             async with ClientSession() as session:
                 if method.upper() == "GET":
