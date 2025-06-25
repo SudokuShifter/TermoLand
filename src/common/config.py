@@ -2,12 +2,12 @@ import os
 
 from pydantic import BaseModel, Field
 
-from src.common.const import DEFAULT_URL, DEFAULT_PATH
+from src.common.const import DEFAULT_URL, DEFAULT_URL_PATH
 
 
 class ExternalApiConfig(BaseModel):
     URL: str = Field(default=DEFAULT_URL)
-    PATH: str = Field(default=DEFAULT_PATH)
+    URL_PATH: str = Field(default=DEFAULT_URL_PATH)
 
 
 class AppConfig(BaseModel):

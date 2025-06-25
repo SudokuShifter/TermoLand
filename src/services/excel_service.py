@@ -30,7 +30,7 @@ class ExcelService:
         try:
             data = await self.http_client.execute_request(
                 method="GET",
-                url=f"{self.config.URL}/{self.config.PATH}",
+                url=f"{self.config.URL}/{self.config.URL_PATH}",
                 url_params=url_params,
             )
             return data

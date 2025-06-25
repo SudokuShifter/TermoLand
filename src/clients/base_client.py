@@ -2,7 +2,7 @@ from abc import ABC
 from typing import Any, Optional, Dict, Tuple, Union
 
 from aiohttp import ClientSession
-from urllib.parse import urlencode
+from urllib.parse import urlencode, quote
 from loguru import logger
 
 
@@ -26,7 +26,7 @@ class BaseHTTPClient(ABC):
             raise ValueError(f"Метод {method} не может содержать тело запроса")
 
         if url_params:
-            url = f"{url}?{urlencode(url_params)}"
+            url = f"{url}?{BaseHTTPClient.custom_urlencode(url_params)}"
 
         try:
             async with ClientSession() as session:
@@ -51,3 +51,13 @@ class BaseHTTPClient(ABC):
         except Exception as e:
             logger.error(f"Ошибка при выполнении HTTP-запроса: {e}")
             return None
+
+    @classmethod
+    def custom_urlencode(cls, params: dict) -> str:
+        parts = []
+        for key, value in params.items():
+            if key == "objects":
+                parts.append(f"{key}={value}")
+            else:
+                parts.append(f"{key}={quote(str(value))}")
+        return "&".join(parts)
