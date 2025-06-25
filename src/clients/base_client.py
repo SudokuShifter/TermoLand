@@ -52,8 +52,8 @@ class BaseHTTPClient(ABC):
             logger.error(f"Ошибка при выполнении HTTP-запроса: {e}")
             return None
 
-    @classmethod
-    def custom_urlencode(cls, params: dict) -> str:
+    @staticmethod
+    def custom_urlencode(params: dict) -> str:
         parts = []
         for key, value in params.items():
             if key == "objects":
